@@ -1,0 +1,108 @@
+var rocketlength = 80;
+var rocketwidth = 5;
+var rockethover = 10;
+var p1 = 200;
+var p2 = 200;
+var p1score = 0;
+var p2score = 0;
+var pspeed = 5;
+var ballx = 300;
+var bally = 200;
+var speedx = 2;
+var speedy = 1;
+var ballr = 10;
+
+function setup() {
+  createCanvas(600, 400);
+}
+
+function draw() {
+  background(0);
+  //draw player 1
+  fill(255);
+  rect(rockethover, p1, rocketwidth, rocketlength);
+  //draw player 2
+  rect(width - rockethover - rocketwidth, bally - 10, rocketwidth, rocketlength);
+  stroke(255);
+  //draw middle line
+  line(width / 2, 0, width / 2, height)
+  //draw the ball
+  ellipse(ballx, bally, ballr);
+
+
+
+  /* user imput */
+  //'W' key
+  if (keyIsDown(87)) {
+    p1 = p1 - pspeed
+  }
+  //'S' key
+  if (keyIsDown(83)) {
+    p1 = p1 + pspeed
+  }
+
+  /* game logic */
+  //p1 stay within the screen
+  if (p1 <= 0) {
+    p1 = 0;
+  }
+  if (p1 >= height - rocketlength) {
+    p1 = height - rocketlength;
+  }
+  //p2 stay within the screen
+  if (p2 <= 0) {
+    p2 = 0;
+  }
+  if (p2 >= height - rocketlength) {
+    p2 = height - rocketlength;
+  }
+
+  ballx = ballx + speedx;
+  bally = bally + speedy;
+
+  //ball bounce off top wall
+  if (bally <= 0) {
+    bally = 0;
+    speedy = -speedy;
+
+    //ball bounce off bottom wall
+  }
+  if (bally >= height) {
+    bally = height;
+    speedy = -speedy;
+  }
+
+  //ball bounce back when hit right paddle
+  if (ballx >= width - rockethover - rocketwidth) {
+    speedx = speedx + 1;
+    speedx = -speedx;
+    speedy = random(1, 3);
+  }
+
+  //ball bounce back when hit left paddle
+  if (ballx <= rockethover + rocketwidth && ballx >= 0 && bally >= p1 && bally <= p1 + rocketlength) {
+    speedx = speedx - 1;
+    speedx = -speedx;
+    p1score = p1score + 1;
+  }
+
+  //if p1 miss the ball
+  if (ballx <= 0) {
+    ballx = -10;
+    bally = 100;
+    //diplay "win" for p2
+    textSize(80);
+    textStyle(BOLD);
+    text('YOU LOSER', 50, 200);
+    text('score', 150, 300);
+    text(p1score, 400, 300);
+    speedx = 2;
+    speedy = random(1, 3);
+    //reset the ball
+    if (mouseIsPressed) {
+      p1score = 0;
+      ballx = 300;
+      bally = random(0, height)
+    }
+  }
+}
